@@ -8,6 +8,13 @@ git commit -m "初次提交：添加 Go Web 服务器"
 # 推送到github
 git push -u origin master
 
+# 给代码打标签
+git tag -a v2025.4.23.001 -m "第一个正式版本"
+
+# 推送
+git push origin v2025.4.23.001
+
+
 # 初始化操作
 cd ~/projects/hello-go
 git init
@@ -17,3 +24,5 @@ git remote add origin https://github.com/markfc1988/hello-go.git
 
 # 如果提示已关联了远程仓库，可以更新
 git remote set-url origin https://github.com/markfc1988/hello-go.git
+
+
