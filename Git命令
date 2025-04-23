@@ -1,0 +1,24 @@
+# 查看当前远程仓库地址
+git remote -v
+
+
+
+# 添加代码到版本库，本地缓存
+git add .
+git commit -m "初次提交：添加 Go Web 服务器"
+
+# 推送到github
+git push -u origin master
+
+
+
+
+# 初始化操作
+cd ~/projects/hello-go
+git init
+
+# 关联远程仓库
+git remote add origin https://github.com/markfc1988/hello-go.git
+
+# 如果提示已关联了远程仓库，可以更新
+git remote set-url origin https://github.com/markfc1988/hello-go.git
