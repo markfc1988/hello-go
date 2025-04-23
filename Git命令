@@ -1,17 +1,12 @@
 # 查看当前远程仓库地址
 git remote -v
 
-
-
 # 添加代码到版本库，本地缓存
 git add .
 git commit -m "初次提交：添加 Go Web 服务器"
 
 # 推送到github
 git push -u origin master
-
-
-
 
 # 初始化操作
 cd ~/projects/hello-go
