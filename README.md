@@ -1,6 +1,8 @@
 # Go HTTP Hello World
 ## 出处
-这套代码是我从https://github.com/geetarista/go-http-hello-world.git下载下来，做go的练习使用。
+这套代码是我从
+https://github.com/geetarista/go-http-hello-world.git
+下载下来，做go的练习使用。
 
 ## 方向
 不断优化，希望可以成为一个go 工程师；虽然现在才入门，很多代码还看不懂,加油吧！
