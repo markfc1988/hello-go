@@ -1,13 +1,18 @@
 # Go HTTP Hello World
+## 出处
+这套代码是我从https://github.com/geetarista/go-http-hello-world.git下载下来，做go的练习使用。
 
-A simple HTTP "Hello World" server in Go.
+## 方向
+不断优化，希望可以成为一个go 工程师；虽然现在才入门，很多代码还看不懂,加油吧！
 
-## Usage
-
-### Locally
-
-Just run the following to clone, build, and start the server.
-
+## 运行
+1: 
+```shell
+git clone xxxxx
+cd go-http-hello-world/hello_world
+go run hello_world.go
+```
+2:
 ```shell
 git clone https://github.com/geetarista/go-http-hello-world.git
 cd go-http-hello-world/hello_world
@@ -15,18 +20,11 @@ go build hello_world.go
 ./hello_world
 ```
 
-Then just curl the path and you'll see the message. You can visit it multiple times and increment the count.
-
+## 验证
 ```shell
+#直接访问服务器地址，默认使用的是80端口
+
+# 使用命令行
 curl http://localhost/
 ```
-
-If the server immediately stops, you might need to change the `port` constant in [hello_world.go](https://raw.github.com/geetarista/go-http-hello-world/master/hello_world/hello_world.go).
-
-### Google App Engine
-
-The app is set up on Google App Engine. All you have to do is just visit [http://gohttphelloworld.appspot.com/](http://gohttphelloworld.appspot.com/).
-
-## License
-
-MIT. See `LICENSE`
+A simple HTTP "Hello World" server in Go.
