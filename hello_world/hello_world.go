@@ -1,49 +1,70 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"sync"
 )
 
 const (
 	port = ":80"
 )
 
-var calls = 0
-var cal1 = 0
+// 用于记录每个路径访问次数的map。带互斥锁确保并发安全
+var (
+	stats = make(map[string]int) // 例如： /hi:7
+	mu    sync.Mutex
+)
 
-// 定义一个 HelloWorld 函数，打印出访问的次数，需要传入两个参数
+// 中间件：统计访问次数，并调用原始handler,难点！其实只做了计数的统计，剩下的还是交给原来的函数做
+func countAndHandle(path string, handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		mu.Lock()
+		stats[path]++
+		mu.Unlock()
+		handler(w, r)
+	}
+}
+
+// 根路径处理器
 func HelloWorld(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		return // 不处理非根路径的请求（如 /favicon.ico）
-	}
-	calls++
-	// 访问递增，并显示出相关信息
-	fmt.Fprintf(w, "Hello, world! You have called me %d times.\n", calls)
+	fmt.Fprintln(w, "Hello, world!")
 }
 
+// /hi 路径处理器
 func HiHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/hi" {
-		return // 不处理非根路径的请求（如 /favicon.ico）
-	}
-	cal1++
-	fmt.Fprintf(w, "Hello, world! You have called me %d times.\n", cal1)
+	fmt.Fprintln(w, "Hi there!")
 }
 
-// 初始化函数，先执行
-func init() {
-	// 打印相关信息
-	fmt.Printf("Started server at http://localhost%v.\n", port)
+// /stats 路径处理器：输出访问统计（JSON 格式）
+func StatsHandler(w http.ResponseWriter, r *http.Request) {
+	mu.Lock()
+	defer mu.Unlock()
 
-	// 显示定义路由
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(stats)
+}
+
+// /reset 路径处理器：重置所有统计
+func ResetHandler(w http.ResponseWriter, r *http.Request) {
+	mu.Lock()
+	for k := range stats {
+		stats[k] = 0
+	}
+	mu.Unlock()
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintln(w, "Stats reset.")
+}
+
+func main() {
 	mux := http.NewServeMux()
 
-	// 调用http包的 HandleFunc 函数，需要一个字符串和一个函数;访问/就回调用一次函数
-	mux.HandleFunc("/", HelloWorld)
-	mux.HandleFunc("/hi", HiHandler)
+	mux.HandleFunc("/", countAndHandle("/", HelloWorld))
+	mux.HandleFunc("/hi", countAndHandle("/hi", HiHandler))
+	mux.HandleFunc("/stats", countAndHandle("/stats", StatsHandler))
+	mux.HandleFunc("/reset", countAndHandle("/reset", ResetHandler))
 
-	// 启动监听;调用http包的 ListenAndServe 函数 ，需要传入两个参数，字符串和 http.Handler，这是http包下的一个接口，不明白了....
+	fmt.Printf("🚀 Server started at http://localhost%v\n", port)
 	http.ListenAndServe(port, mux)
 }
-
-func main() {}
