@@ -64,6 +64,9 @@ func main() {
 	mux.HandleFunc("/hi", countAndHandle("/hi", HiHandler))
 	mux.HandleFunc("/stats", countAndHandle("/stats", StatsHandler))
 	mux.HandleFunc("/reset", countAndHandle("/reset", ResetHandler))
+	// 添加这段：访问 static 目录
+	fs := http.FileServer(http.Dir("../static"))
+	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	fmt.Printf("🚀 Server started at http://localhost%v\n", port)
 	http.ListenAndServe(port, mux)
